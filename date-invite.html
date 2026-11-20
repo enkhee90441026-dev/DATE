@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Надтай болзох уу? 🌹</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Manrope:wght@400;600;700&display=swap&subset=cyrillic" rel="stylesheet">
+<style>
+  /* ====== ЭНД ӨӨРЧИЛ ====== */
+  :root{
+    --bg:#0d0709; --card:#1a0d11; --red:#e0284f; --red2:#ff6b8a; --text:#f6e9ec; --muted:#b9939c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at top,#2a0b14 0%,var(--bg) 60%);
+    color:var(--text);font-family:Manrope,system-ui,sans-serif;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .heart{position:absolute;bottom:-40px;color:var(--red);opacity:.5;animation:rise linear forwards}
+  @keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+
+  .card{
+    position:relative;z-index:1;width:min(92vw,420px);
+    background:linear-gradient(160deg,#22101a,var(--card));
+    border:1px solid #4a1a26;border-radius:24px;padding:36px 26px 30px;text-align:center;
+    box-shadow:0 20px 60px rgba(224,40,79,.18);
+  }
+  .step{display:none;animation:fade .45s ease}
+  .step.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .emoji{font-size:64px;line-height:1;margin-bottom:14px;display:inline-block;animation:beat 1.3s ease-in-out infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+  h1{font-family:'Playfair Display',serif;font-weight:600;font-size:28px;line-height:1.25;margin-bottom:10px}
+  h1 em{color:var(--red2);font-style:italic}
+  p.sub{color:var(--muted);font-size:15px;margin-bottom:26px;line-height:1.5}
+
+  .btns{display:flex;gap:14px;justify-content:center;align-items:center;min-height:64px;flex-wrap:wrap}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:999px;font-weight:700;font-size:16px;transition:transform .2s, background .2s}
+  .yes{background:var(--red);color:#fff;padding:14px 34px;box-shadow:0 6px 24px rgba(224,40,79,.45)}
+  .yes:hover{background:#f03a60}
+  .no{background:transparent;color:var(--muted);border:1px solid #5a2a35;padding:12px 26px}
+  .no.flee{position:fixed;z-index:5;transition:left .25s ease, top .25s ease}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+  .opt{background:#24121a;color:var(--text);border:1px solid #47202b;border-radius:16px;padding:16px 8px;font-weight:600;font-size:15px}
+  .opt .i{display:block;font-size:26px;margin-bottom:6px}
+  .opt.sel{border-color:var(--red);background:#3a1420;box-shadow:0 0 0 2px rgba(224,40,79,.35)}
+  .next{background:var(--red);color:#fff;padding:13px 30px;width:100%}
+  .next:disabled{opacity:.35;cursor:not-allowed}
+  .dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
+  .dots span{width:7px;height:7px;border-radius:50%;background:#4a1f2a}
+  .dots span.on{background:var(--red)}
+
+  .ticket{background:#120809;border:1px dashed #6a2a3a;border-radius:18px;padding:20px;text-align:left;margin:18px 0 20px}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2a141b;font-size:15px}
+  .row:last-child{border:none}
+  .row b{color:var(--red2)}
+  .ghost{background:transparent;color:var(--muted);border:1px solid #5a2a35;padding:11px 22px;margin-top:10px;width:100%}
+  .small{font-size:13px;color:var(--muted);margin-top:14px}
+</style>
+</head>
+<body>
+<div id="hearts"></div>
+
+<div class="card">
+
+  <!-- 1. Асуулт -->
+  <section class="step active" id="s1">
+    <div class="emoji">🌹</div>
+    <h1>Хэй <em id="toName">чи</em>…<br>надтай болзоонд явах уу?</h1>
+    <p class="sub" id="plea">Зөв товчоо дараарай 😌</p>
+    <div class="btns">
+      <button class="yes" id="yesBtn">Тийм 💗</button>
+      <button class="no" id="noBtn">Үгүй</button>
+    </div>
+  </section>
+
+  <!-- 2. Өдөр -->
+  <section class="step" id="s2">
+    <div class="dots"><span class="on"></span><span></span><span></span></div>
+    <h1>Йэээ! 🥹<br>Аль өдөр болох вэ?</h1>
+    <p class="sub">Чамд тохирох өдрийг сонго</p>
+    <div class="grid" data-key="day">
+      <button class="opt"><span class="i">🌙</span>Энэ Баасан</button>
+      <button class="opt"><span class="i">☀️</span>Энэ Бямба</button>
+      <button class="opt"><span class="i">🌤️</span>Энэ Ням</button>
+      <button class="opt"><span class="i">📅</span>Чи шийд</button>
+    </div>
+    <button class="next" disabled>Дараах →</button>
+  </section>
+
+  <!-- 3. Юу хийх -->
+  <section class="step" id="s3">
+    <div class="dots"><span class="on"></span><span class="on"></span><span></span></div>
+    <h1>Юу хийх вэ?</h1>
+    <p class="sub">Хамтдаа юу хиймээр байна?</p>
+    <div class="grid" data-key="what">
+      <button class="opt"><span class="i">☕</span>Кофе уух</button>
+      <button class="opt"><span class="i">🍝</span>Оройн хоол</button>
+      <button class="opt"><span class="i">🎬</span>Кино үзэх</button>
+      <button class="opt"><span class="i">🌃</span>Шөнийн алхалт</button>
+      <button class="opt"><span class="i">🎤</span>Норэбан</button>
+      <button class="opt"><span class="i">🎡</span>Бүгдийг нь</button>
+    </div>
+    <button class="next" disabled>Дараах →</button>
+  </section>
+
+  <!-- 4. Цаг -->
+  <section class="step" id="s4">
+    <div class="dots"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+    <h1>Хэдэн цагт?</h1>
+    <p class="sub">Би чамайг авахаар очно 😎</p>
+    <div class="grid" data-key="time">
+      <button class="opt"><span class="i">🌅</span>Өдөр 14:00</button>
+      <button class="opt"><span class="i">🌇</span>Орой 17:00</button>
+      <button class="opt"><span class="i">🌆</span>Орой 19:00</button>
+      <button class="opt"><span class="i">🌌</span>Шөнө 21:00</button>
+    </div>
+    <button class="next" disabled>Болзоог баталгаажуулах 💌</button>
+  </section>
+
+  <!-- 5. Тасалбар -->
+  <section class="step" id="s5">
+    <div class="emoji">💘</div>
+    <h1>Болзоо <em>баталгаажлаа!</em></h1>
+    <div class="ticket">
+      <div class="row"><span>Хэн</span><b id="tWho">Чи & Би</b></div>
+      <div class="row"><span>Өдөр</span><b id="tDay"></b></div>
+      <div class="row"><span>Юу хийх</span><b id="tWhat"></b></div>
+      <div class="row"><span>Цаг</span><b id="tTime"></b></div>
+      <div class="row"><span>Хувцаслалт</span><b>Хамгийн хөөрхөн нь ✨</b></div>
+    </div>
+    <button class="next" id="copyBtn">Хариугаа хуулах 📋</button>
+    <p class="small" id="copyMsg">Хуулаад надад мессежээр илгээгээрэй, эсвэл скриншот хийгээрэй 🥰</p>
+    <button class="ghost" id="restart">Дахин эхлэх</button>
+  </section>
+</div>
+
+<script>
+/* ====== ЭНД НЭРЭЭ ӨӨРЧИЛ ====== */
+const TO_NAME   = "чи";    // хэнийг урьж байгаа (жишээ: "Сараа")
+const FROM_NAME = "Би";    // чиний нэр
+
+document.getElementById('toName').textContent = TO_NAME;
+document.getElementById('tWho').textContent = (TO_NAME === "чи" ? "Чи" : TO_NAME) + " & " + FROM_NAME;
+
+/* хөвөх зүрхнүүд */
+const hearts = document.getElementById('hearts');
+function spawnHeart(burst){
+  const h = document.createElement('div');
+  h.className = 'heart';
+  h.textContent = ['♥','❤','♡','💗'][Math.floor(Math.random()*4)];
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.fontSize = (12 + Math.random()*22) + 'px';
+  h.style.animationDuration = (burst ? 2.5 + Math.random()*2 : 6 + Math.random()*6) + 's';
+  if (burst) h.style.opacity = .9;
+  hearts.appendChild(h);
+  setTimeout(()=>h.remove(), 13000);
+}
+setInterval(()=>spawnHeart(false), 650);
+function burst(){ for(let i=0;i<40;i++) setTimeout(()=>spawnHeart(true), i*35); }
+
+/* алхмууд */
+const data = {};
+function go(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+}
+
+/* "Үгүй" товч зугтана */
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const plea = document.getElementById('plea');
+const pleas = ["Итгэлтэй байна уу? 🥺","Дахиад нэг бодоорой…","Би уйлах нь ээ 😢","Үгүй гэдэг сонголт байхгүй шүү 😏","Тийм гэдэг рүү л дар даа 💗","Барьж чадахгүй ш дээ 😜"];
+let tries = 0, scale = 1;
+function flee(e){
+  if (e) e.preventDefault();
+  tries++;
+  plea.textContent = pleas[Math.min(tries-1, pleas.length-1)];
+  scale = Math.min(scale + 0.15, 2.2);
+  yesBtn.style.transform = `scale(${scale})`;
+  const r = noBtn.getBoundingClientRect();
+  noBtn.classList.add('flee');
+  const pad = 16;
+  const x = pad + Math.random()*(window.innerWidth - r.width - pad*2);
+  const y = pad + Math.random()*(window.innerHeight - r.height - pad*2);
+  noBtn.style.left = x + 'px';
+  noBtn.style.top = y + 'px';
+  if (tries >= 7) noBtn.textContent = "За за… 🙈";
+}
+noBtn.addEventListener('mouseenter', flee);
+noBtn.addEventListener('touchstart', flee, {passive:false});
+noBtn.addEventListener('click', flee);
+
+yesBtn.addEventListener('click', ()=>{
+  noBtn.style.display = 'none';
+  burst();
+  go(2);
+});
+
+/* сонголтууд */
+document.querySelectorAll('.grid').forEach((grid, gi)=>{
+  const key = grid.dataset.key;
+  const section = grid.closest('.step');
+  const next = section.querySelector('.next');
+  grid.querySelectorAll('.opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      grid.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+      opt.classList.add('sel');
+      data[key] = opt.textContent.trim().replace(/^\S+\s*/, '');
+      data[key+'Icon'] = opt.querySelector('.i').textContent;
+      next.disabled = false;
+    });
+  });
+  next.addEventListener('click', ()=>{
+    const stepNum = +section.id.slice(1);
+    if (stepNum === 4) {
+      document.getElementById('tDay').textContent  = data.dayIcon + ' ' + data.day;
+      document.getElementById('tWhat').textContent = data.whatIcon + ' ' + data.what;
+      document.getElementById('tTime').textContent = data.timeIcon + ' ' + data.time;
+      burst();
+    }
+    go(stepNum + 1);
+  });
+});
+
+/* хуулах */
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const txt = `💘 Болзоонд ТИЙМ гэлээ!\n📅 ${data.day}\n✨ ${data.what}\n⏰ ${data.time}`;
+  const msg = document.getElementById('copyMsg');
+  try { await navigator.clipboard.writeText(txt); msg.textContent = "Хуулагдлаа! Одоо надад илгээгээрэй 💌"; }
+  catch(e){ msg.textContent = "Хуулж чадсангүй — скриншот хийгээд илгээгээрэй 📸"; }
+});
+document.getElementById('restart').addEventListener('click', ()=>{
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.next').forEach(b=>{ if(b.id!=='copyBtn') b.disabled = true; });
+  noBtn.style.display=''; noBtn.classList.remove('flee'); noBtn.textContent='Үгүй';
+  yesBtn.style.transform=''; scale=1; tries=0; plea.textContent='Зөв товчоо дараарай 😌';
+  go(1);
+});
+</script>
+</body>
+</html>
